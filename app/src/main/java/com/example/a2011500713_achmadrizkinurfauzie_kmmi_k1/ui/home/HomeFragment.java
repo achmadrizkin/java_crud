@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
             }
             @Override
             public void onFailure(Call<PostList> call, Throwable t) {
-                pbLoading.setVisibility(View.GONE);
+//                pbLoading.setVisibility(View.GONE);
                 Toast.makeText(getContext(), t.getLocalizedMessage(),
                         Toast.LENGTH_SHORT).show();
             }

@@ -4,23 +4,37 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.R;
+import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.BlogClient;
+import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.BlogServiceGenerator;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.Post;
+import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.PostList;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.ui.home.HomeFragment;
+import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.ui.home.PostAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class NewsFragment extends Fragment {
     private PostAdapterNews postAdapter;
     private RecyclerView rvPost;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar pbLoading;
+
 
     public static NewsFragment newInstance() {
         return new NewsFragment();
@@ -35,13 +49,47 @@ public class NewsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         // initialize view
         rvPost = view.findViewById(R.id.rvNews);
-        // Initialize recyclerview and adapter
+
+        // initialize recylerView and adapter
         postAdapter = new PostAdapterNews();
         rvPost.setAdapter(postAdapter);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
-                false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvPost.setLayoutManager(layoutManager);
+
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        fetchData();
+    }
+
+    private void fetchData() {
+//        pbLoading.setVisibility(View.VISIBLE);
+        BlogClient client = BlogServiceGenerator.createService(BlogClient.class);
+        client.getListPost().enqueue(new Callback<PostList>() {
+            @Override
+            public void onResponse(Call<PostList> call, Response<PostList> response) {
+//                pbLoading.setVisibility(View.GONE);
+                if (response.isSuccessful()) {
+                    postAdapter.setListPost(response.body().getData());
+                } else {
+                    Toast.makeText(getContext(), "Gagal fetch data",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<PostList> call, Throwable t) {
+//                pbLoading.setVisibility(View.GONE);
+                Toast.makeText(getContext(), t.getLocalizedMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
