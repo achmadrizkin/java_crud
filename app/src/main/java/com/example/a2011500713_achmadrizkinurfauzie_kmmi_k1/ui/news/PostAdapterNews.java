@@ -40,7 +40,7 @@ public class PostAdapterNews extends RecyclerView.Adapter<PostAdapterNews.PostVi
 
         public void bindItem(Post post) {
             tvTitle.setText(post.getTitle());
-            tvDate.setText(post.getDate());
+            tvDate.setText(post.getCreatedAt());
 
             // TODO: DONT REMOVE THIS SHIT
             // Glide.with(itemView.getContext())

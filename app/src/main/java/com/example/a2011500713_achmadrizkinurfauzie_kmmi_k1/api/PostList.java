@@ -10,7 +10,6 @@ public class PostList {
     @SerializedName("message")
     private String message;
     @SerializedName("data")
-
     private List<Post> data;
 
     public PostList() {

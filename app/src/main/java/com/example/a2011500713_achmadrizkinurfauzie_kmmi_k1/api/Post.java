@@ -6,9 +6,17 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class Post {
+    @SerializedName("id")
     private int id;
+    @SerializedName("title")
     private String title;
-    private String date;
+    @SerializedName("body")
+    private String body;
+    @SerializedName("created_at")
+    private String createdAt;
+    @SerializedName("updated_at")
+    private String updatedAt;
+    @SerializedName("image_path")
     private String thumbnailUrl;
 
     public Post() {
@@ -30,12 +38,28 @@ public class Post {
         this.title = title;
     }
 
-    public String getDate() {
-        return date;
+    public String getBody() {
+        return body;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public String getThumbnailUrl() {

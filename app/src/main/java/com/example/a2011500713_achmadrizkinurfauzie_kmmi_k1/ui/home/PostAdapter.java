@@ -40,7 +40,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         public void bindItem(Post post) {
             tvTitle.setText(post.getTitle());
-            tvDate.setText(post.getDate());
+            tvDate.setText(post.getCreatedAt());
             Glide.with(itemView.getContext()).load(post.getThumbnailUrl()).into(ivThumbnail);
         }
     }

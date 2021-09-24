@@ -43,19 +43,5 @@ public class NewsFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
                 false);
         rvPost.setLayoutManager(layoutManager);
-        getDummyPost();
-    }
-
-    private void getDummyPost() {
-        List<Post> postList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Post post = new Post();
-            post.setId(i);
-            post.setTitle("Judul Post ke " + i);
-            post.setDate("19 September 2021");
-            post.setThumbnailUrl("https://blog.hacktiv8.com/content/images/size/w2000/2017/02/coding-screen.jpeg");
-            postList.add(post);
-        }
-        postAdapter.setListPost(postList);
     }
 }

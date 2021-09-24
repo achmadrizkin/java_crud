@@ -12,17 +12,24 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.R;
-import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.Post;
+import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.BlogClient;
+import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.BlogServiceGenerator;
+import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.PostList;
 
-import java.util.ArrayList;
-import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
     private PostAdapter postAdapter;
     private RecyclerView rvPost;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar pbLoading;
+
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -56,21 +63,29 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        getDummyPost();
+        fetchData();
     }
 
-    private void getDummyPost() {
-        List<Post> postList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Post post = new Post();
-            post.setId(i);
-            post.setTitle("Judul Post ke-" + i);
-            post.setDate("19 September 2021");
-            post.setThumbnailUrl("https://blog.hacktiv8.com/content/images/size/w2000/2017/02/coding-screen.jpeg");
-
-            postList.add(post);
-        }
-
-        postAdapter.setListPost(postList);
+    private void fetchData() {
+//        pbLoading.setVisibility(View.VISIBLE);
+        BlogClient client = BlogServiceGenerator.createService(BlogClient.class);
+        client.getListPost().enqueue(new Callback<PostList>() {
+            @Override
+            public void onResponse(Call<PostList> call, Response<PostList> response) {
+//                pbLoading.setVisibility(View.GONE);
+                if (response.isSuccessful()) {
+                    postAdapter.setListPost(response.body().getData());
+                } else {
+                    Toast.makeText(getContext(), "Gagal fetch data",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<PostList> call, Throwable t) {
+                pbLoading.setVisibility(View.GONE);
+                Toast.makeText(getContext(), t.getLocalizedMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
