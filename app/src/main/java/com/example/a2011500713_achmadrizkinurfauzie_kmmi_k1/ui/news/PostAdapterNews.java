@@ -30,6 +30,8 @@ public class PostAdapterNews extends RecyclerView.Adapter<PostAdapterNews.PostVi
         private final TextView tvTitle;
         private final TextView tvDate;
         private final ImageView ivFavorite;
+        private final ImageView ivManage = itemView.findViewById(R.id.ivManage);;
+
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -37,12 +39,39 @@ public class PostAdapterNews extends RecyclerView.Adapter<PostAdapterNews.PostVi
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvDate = itemView.findViewById(R.id.tvDateNews);
             ivFavorite = itemView.findViewById(R.id.ivFavorite);
+
         }
 
         public void bindItem(Post post) {
             tvTitle.setText(post.getTitle());
             tvDate.setText(post.getCreatedAt());
             Glide.with(itemView.getContext()).load(post.getThumbnailUrl()).into(ivThumbnail);
+
+//            ivManage.setOnClickListener(new View.OnClickListener() {
+//                public void onClick(View view) {
+//                    PopupMenu popupMenu = new PopupMenu(ivManage.getContext(), ivManage);
+//                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//                        @Override
+//                        public boolean onMenuItemClick(MenuItem item) {
+//                            switch (item.getItemId()) {
+//                                case R.id.action_edit:
+//                                    // TODO::Navigate to Create Delete Activity
+//                                    return true;
+//                                case R.id.action_delete:
+//                                    // TODO::SHOW POPUP TO DELETE
+//                                    return true;
+//                                default:
+//                                    return false;
+//                            }
+//                        }
+//                    });
+//                    // inflate your menu
+//                    popupMenu.inflate(R.menu.my_news_list_menu);
+//                    popupMenu.setGravity(Gravity.RIGHT);
+//                    popupMenu.show();
+//                }
+//            });
+
         }
     }
 

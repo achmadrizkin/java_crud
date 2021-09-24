@@ -1,5 +1,6 @@
 package com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.ui.news;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +20,10 @@ import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.BlogClient;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.BlogServiceGenerator;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.Post;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.PostList;
+import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.ui.createEdit.CreateEditActivity;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.ui.home.HomeFragment;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.ui.home.PostAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +34,10 @@ import retrofit2.Response;
 
 public class NewsFragment extends Fragment {
     private PostAdapterNews postAdapter;
-    private RecyclerView rvPost;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView rvNews;
     private ProgressBar pbLoading;
-
+    private FloatingActionButton fabCreate;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public static NewsFragment newInstance() {
         return new NewsFragment();
@@ -42,54 +45,67 @@ public class NewsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_news, container, false);
+        View view = inflater.inflate(R.layout.fragment_news, container, false);
+        rvNews = view.findViewById(R.id.rvNews);
+        pbLoading = view.findViewById(R.id.pbLoading);
+        fabCreate = view.findViewById(R.id.fabCreate);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+
+        fabCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), CreateEditActivity.class));
+            }
+        });
+
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initRecyclerview();
+        fetchData();
+        initSwipeRefresh();
+    }
 
-        // initialize view
-        rvPost = view.findViewById(R.id.rvNews);
-
-        // initialize recylerView and adapter
-        postAdapter = new PostAdapterNews();
-        rvPost.setAdapter(postAdapter);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        rvPost.setLayoutManager(layoutManager);
-
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+    private void initSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                fetchData();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-
-        fetchData();
     }
 
     private void fetchData() {
-//        pbLoading.setVisibility(View.VISIBLE);
+        pbLoading.setVisibility(View.VISIBLE);
         BlogClient client = BlogServiceGenerator.createService(BlogClient.class);
         client.getListPost().enqueue(new Callback<PostList>() {
             @Override
             public void onResponse(Call<PostList> call, Response<PostList> response) {
-//                pbLoading.setVisibility(View.GONE);
+                pbLoading.setVisibility(View.GONE);
                 if (response.isSuccessful()) {
                     postAdapter.setListPost(response.body().getData());
                 } else {
-                    Toast.makeText(getContext(), "Gagal fetch data",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Gagal fetch data", Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
             public void onFailure(Call<PostList> call, Throwable t) {
-//                pbLoading.setVisibility(View.GONE);
-                Toast.makeText(getContext(), t.getLocalizedMessage(),
-                        Toast.LENGTH_SHORT).show();
+                pbLoading.setVisibility(View.GONE);
+                Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void initRecyclerview() {
+        postAdapter = new PostAdapterNews();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
+                false);
+        rvNews.setLayoutManager(linearLayoutManager);
+        rvNews.setAdapter(postAdapter);
     }
 }
