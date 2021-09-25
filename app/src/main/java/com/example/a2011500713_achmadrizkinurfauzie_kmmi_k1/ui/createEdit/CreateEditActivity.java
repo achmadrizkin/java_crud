@@ -19,10 +19,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.MainActivity;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.R;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.BlogClient;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.BlogServiceGenerator;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.CreatePostResponse;
+import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.EditPostRequest;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.Post;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.PostRequest;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.ui.util.ImageBase64Converter;
@@ -41,6 +43,7 @@ public class CreateEditActivity extends AppCompatActivity {
     private TextInputEditText inputBody;
     private ProgressBar pbLoading;
     private Button btnSave;
+    private ImageView ivBack;
     String imageBase64;
 
     public static String POST_KEY = "POST_KEY";
@@ -61,6 +64,14 @@ public class CreateEditActivity extends AppCompatActivity {
         inputBody = findViewById(R.id.inputBody);
         pbLoading = findViewById(R.id.pbLoading);
         btnSave = findViewById(R.id.btnSave);
+        ivBack = findViewById(R.id.ivBack);
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
 
         //
         pickImageFromGallery();
@@ -136,39 +147,40 @@ public class CreateEditActivity extends AppCompatActivity {
 
         // TODO: Watch this Code:
         if (editMode) {
-//            editPost();
+            editPost();
         } else {
             createPost();
         }
 
     }
 
-//    private void editPost() {
-//        EditPostRequest request = new EditPostRequest();
-//        request.setImageBase64(imageBase64);
-//        request.setTitle(inputTitle.getText().toString());
-//        request.setBody(inputBody.getText().toString());
-//        showLoading();
-//        BlogClient client = BlogServiceGenerator.createService(BlogClient.class);
-//        client.editPost(request, String.valueOf(post.getId())).enqueue(new Callback<EditPostResponse>() {
-//            @Override
-//            public void onResponse(Call<EditPostResponse> call, Response<EditPostResponse> response) {
-//                hideLoading();
-//                if (response.isSuccessful()) {
-//                    Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-//                    finish();
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "Failed send data", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<EditPostResponse> call, Throwable t) {
-//                hideLoading();
-//                Toast.makeText(getApplicationContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
+    private void editPost() {
+        EditPostRequest request = new EditPostRequest();
+        request.setImageBase64(imageBase64);
+        request.setTitle(inputTitle.getText().toString());
+        request.setBody(inputBody.getText().toString());
+        showLoading();
+        BlogClient client = BlogServiceGenerator.createService(BlogClient.class);
+        client.editPost(request, String.valueOf(post.getId())).enqueue(new Callback<EditPostRequest>() {
+            @Override
+            public void onResponse(Call<EditPostRequest> call, Response<EditPostRequest> response) {
+                hideLoading();
+                if (response.isSuccessful()) {
+//                   Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Failed send data", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EditPostRequest> call, Throwable t) {
+                hideLoading();
+                Toast.makeText(getApplicationContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void createPost() {
         PostRequest request = new PostRequest();
@@ -183,6 +195,7 @@ public class CreateEditActivity extends AppCompatActivity {
                 hideLoading();
                 if (response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed send data", Toast.LENGTH_SHORT).show();
