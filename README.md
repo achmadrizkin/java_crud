@@ -47,3 +47,4 @@ A Java app based on the responsive design Apps, created by *Achmad Rizki Nur Fau
 ![image](https://user-images.githubusercontent.com/75843138/134754655-ec1ce2d8-29c2-4313-9c9c-00bfb159cb06.png)
 
 ## VIDEO PREVIEW (NO ADS)
+https://drive.google.com/file/d/1Td8fI1-2216DPR7w0KmDPCMCThqx_W66/view?usp=drivesdk
