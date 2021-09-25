@@ -1,5 +1,6 @@
 package com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.ui.home;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ public class HomeFragment extends Fragment implements HomeAdapterActionListener 
     private FloatingActionButton fabCreate;
     private SwipeRefreshLayout swipeRefreshLayout;
     public static int REQUEST_CODE_UPDATE = 200;
+    public static int REQUEST_CODE_CREATE_UPDATE_SUCCESS = 200;
 
 
     public static HomeFragment newInstance() {
@@ -55,7 +57,9 @@ public class HomeFragment extends Fragment implements HomeAdapterActionListener 
         fabCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), CreateEditActivity.class));
+                Intent intent = new Intent(getContext(),
+                        CreateEditActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_CREATE_UPDATE_SUCCESS);
             }
         });
 
@@ -161,8 +165,25 @@ public class HomeFragment extends Fragment implements HomeAdapterActionListener 
     public void onClickEdit(Post post) {
         Intent intent = new Intent(getActivity(), CreateEditActivity.class);
         intent.putExtra(CreateEditActivity.POST_KEY, post);
-        startActivityForResult(intent, REQUEST_CODE_UPDATE);
+        startActivityForResult(intent,
+                REQUEST_CODE_CREATE_UPDATE_SUCCESS);
     }
-
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CREATE_UPDATE_SUCCESS
+                && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                boolean success =
+                        data.getBooleanExtra(CreateEditActivity.RESULT_CREATE_UPDATE_SUCCESS_KEY, false);
+                if (success) {
+                    fetchData();
+                }
+            }
+        }
+    }
 }
+
+
+

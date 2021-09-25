@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -46,8 +47,11 @@ public class CreateEditActivity extends AppCompatActivity {
     private ImageView ivBack;
     String imageBase64;
 
+
     public static String POST_KEY = "POST_KEY";
     private static final int PICK_IMAGE = 100;
+    public static String RESULT_CREATE_UPDATE_SUCCESS_KEY = "result_create_update_success_key";
+
     private boolean editMode = false;
     private Post post;
 
@@ -76,7 +80,17 @@ public class CreateEditActivity extends AppCompatActivity {
         //
         pickImageFromGallery();
         saveListener();
+        backListener();
         handleIntent();
+    }
+
+    private void backListener() {
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                backToPreviousScreen(false);
+            }
+        });
     }
 
     private void handleIntent() {
@@ -121,30 +135,6 @@ public class CreateEditActivity extends AppCompatActivity {
     }
 
     private void sendDataToServer() {
-        PostRequest request = new PostRequest();
-        request.setImageBase64(imageBase64);
-        request.setTitle(inputTitle.getText().toString());
-        request.setBody(inputBody.getText().toString());
-        showLoading();
-        BlogClient client = BlogServiceGenerator.createService(BlogClient.class);
-        client.createPostRequest(request).enqueue(new Callback<CreatePostResponse>() {
-            @Override
-            public void onResponse(Call<CreatePostResponse> call, Response<CreatePostResponse> response) {
-                hideLoading();
-                if (response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Failed send data", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CreatePostResponse> call, Throwable t) {
-                hideLoading();
-                Toast.makeText(getApplicationContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
         // TODO: Watch this Code:
         if (editMode) {
             editPost();
@@ -167,7 +157,7 @@ public class CreateEditActivity extends AppCompatActivity {
                 hideLoading();
                 if (response.isSuccessful()) {
 //                   Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    backToPreviousScreen(true);
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed send data", Toast.LENGTH_SHORT).show();
@@ -195,7 +185,7 @@ public class CreateEditActivity extends AppCompatActivity {
                 hideLoading();
                 if (response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    backToPreviousScreen(true);
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed send data", Toast.LENGTH_SHORT).show();
@@ -208,6 +198,15 @@ public class CreateEditActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void backToPreviousScreen(boolean success) {
+        if (success){
+            Intent intent = new Intent();
+            intent.putExtra(RESULT_CREATE_UPDATE_SUCCESS_KEY, true);
+            setResult(Activity.RESULT_OK, intent);
+        }
+        finish();
     }
 
     private void showLoading() {
