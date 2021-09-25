@@ -18,15 +18,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.R;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.BlogClient;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.BlogServiceGenerator;
-import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.Post;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.api.PostList;
 import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.ui.createEdit.CreateEditActivity;
-import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.ui.home.HomeFragment;
-import com.example.a2011500713_achmadrizkinurfauzie_kmmi_k1.ui.home.PostAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,7 +30,6 @@ public class NewsFragment extends Fragment {
     private PostAdapterNews postAdapter;
     private RecyclerView rvNews;
     private ProgressBar pbLoading;
-    private FloatingActionButton fabCreate;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     public static NewsFragment newInstance() {
@@ -48,15 +41,7 @@ public class NewsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         rvNews = view.findViewById(R.id.rvNews);
         pbLoading = view.findViewById(R.id.pbLoading);
-        fabCreate = view.findViewById(R.id.fabCreate);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-
-        fabCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), CreateEditActivity.class));
-            }
-        });
 
         return view;
     }
@@ -87,7 +72,7 @@ public class NewsFragment extends Fragment {
             public void onResponse(Call<PostList> call, Response<PostList> response) {
                 pbLoading.setVisibility(View.GONE);
                 if (response.isSuccessful()) {
-                    postAdapter.setListPost(response.body().getData());
+                    postAdapter.setPostList(response.body().getData());
                 } else {
                     Toast.makeText(getContext(), "Gagal fetch data", Toast.LENGTH_SHORT).show();
                 }

@@ -19,8 +19,10 @@ import java.util.List;
 public class PostAdapterFavorite extends RecyclerView.Adapter<PostAdapterFavorite.PostViewHolder> {
     public final List<Post> listPost = new ArrayList<>();
 
-    void setListPost(List<Post> listPost) {
-        this.listPost.addAll(listPost);
+
+    void setPostList(List<Post> postList) {
+        this.listPost.clear();
+        this.listPost.addAll(postList);
         this.notifyDataSetChanged();
     }
 
@@ -29,6 +31,7 @@ public class PostAdapterFavorite extends RecyclerView.Adapter<PostAdapterFavorit
         private final TextView tvTitle;
         private final TextView tvDate;
         private final ImageView ivFavorite;
+        // private final ImageView ivManage = itemView.findViewById(R.id.ivManage);
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);

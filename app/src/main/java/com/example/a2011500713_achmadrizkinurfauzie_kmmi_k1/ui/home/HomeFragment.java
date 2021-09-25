@@ -48,7 +48,7 @@ public class HomeFragment extends Fragment implements HomeAdapterActionListener 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_news, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
         rvNews = view.findViewById(R.id.rvNews);
         pbLoading = view.findViewById(R.id.pbLoading);
         fabCreate = view.findViewById(R.id.fabCreate);
