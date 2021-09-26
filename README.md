@@ -4,6 +4,7 @@ A Java app based on the responsive design Apps, created by *Achmad Rizki Nur Fau
 
 ## Features
 - Create Data
+- Read Data
 - Update Data
 - Splash Screen
 - Delete Data
